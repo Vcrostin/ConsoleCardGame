@@ -5,6 +5,7 @@
 #include "../core/utils/string_assist.h"
 #include "gtest/gtest.h"
 #include <string>
+#include <string_view>
 
 TEST(test_string_split, test_splitted_string_empty1) {
     std::string str;

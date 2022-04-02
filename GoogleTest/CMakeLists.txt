@@ -1,13 +1,19 @@
-project(Google_Tests)
+project(basic_test)
 
 add_subdirectory(lib)
+enable_testing()
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 
 
+add_executable(SplitTest split_test.cpp)
+target_link_libraries(SplitTest HearthtoneConsoleLib)
+target_link_libraries(SplitTest gtest gtest_main)
+add_test(NAME SplitTest
+        COMMAND SplitTest)
 
-add_executable(Google_Tests split_test.cpp)
-target_link_libraries(Google_Tests HearthtoneConsoleLib)
-target_link_libraries(Google_Tests gtest gtest_main)
-add_test(NAME split_test
-        COMMAND Google_Tests)
+add_executable(StripTest strip_test.cpp)
+target_link_libraries(StripTest HearthtoneConsoleLib)
+target_link_libraries(StripTest gtest gtest_main)
+add_test(NAME StripTest
+        COMMAND StripTest)

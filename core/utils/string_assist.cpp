@@ -4,7 +4,7 @@
 
 #include "string_assist.h"
 
-std::vector<std::string_view> string_split(std::string &str, char delim) {
+std::vector<std::string_view> string_split(std::string_view str, char delim) {
     std::vector<std::string_view> splitted_string;
     for (auto begin_it = str.begin(); begin_it != str.end();) {
 
