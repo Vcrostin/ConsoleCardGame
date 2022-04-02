@@ -28,3 +28,39 @@ std::vector<std::string_view> string_split(std::string_view str, char delim) {
     }
     return splitted_string;
 }
+
+std::string multiply_string(std::string_view str, size_t n) {
+    std::string res_str;
+    res_str.reserve(str.size() * n);
+    for (size_t i = 0 ; i < n ; i++) {
+        res_str += str;
+    }
+    return res_str;
+}
+
+constexpr inline size_t validate_index(size_t index, std::string_view str) {
+    if (index == std::string::npos) {
+        return str.size();
+    }
+    return index;
+}
+
+std::string replace_chars(std::string_view str, char new_delim, char delim) {
+    std::string res_string;
+    res_string.reserve(str.size());
+    for (size_t i = 0; !str.empty() ; i ++) {
+        size_t index;
+        if (i % 2 == 0) {
+            index = str.find_first_of(delim);
+            index = validate_index(index, str);
+            res_string += str.substr(0, index);
+        }
+        else {
+            index = str.find_first_not_of(delim);
+            index = validate_index(index, str);
+            res_string += multiply_string(std::string(1, new_delim), index);
+        }
+        str.remove_prefix(index);
+    }
+    return res_string;
+}
