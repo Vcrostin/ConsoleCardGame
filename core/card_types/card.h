@@ -16,10 +16,14 @@ namespace Core {
     class Card {
     public:
         [[nodiscard]]
-        constexpr inline int32_t GetCost() const;
+        constexpr inline int32_t GetCost() const {
+            return cost;
+        }
 
         [[nodiscard]]
-        constexpr inline CARD_TYPE GetCardType() const;
+        constexpr inline CARD_TYPE GetCardType() const {
+            return cardType;
+        }
 
         [[nodiscard]] virtual std::string ShowInfo() const = 0;
 
