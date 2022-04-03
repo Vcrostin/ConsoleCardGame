@@ -2,13 +2,11 @@
 // Created by brostin on 03.04.2022.
 //
 
-#ifndef HEARTHTONECONSOLE_BUFF_CARD_H
-#define HEARTHTONECONSOLE_BUFF_CARD_H
+#pragma once
+#include "card.h"
+namespace Core {
+    class buff_card : public Core::Card {
 
+    };
+}
 
-class buff_card {
-
-};
-
-
-#endif //HEARTHTONECONSOLE_BUFF_CARD_H

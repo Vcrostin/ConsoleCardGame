@@ -3,12 +3,13 @@
 //
 
 #pragma once
-
 #include "card.h"
 
+
 namespace Core {
-    class damage_card : public Core::Card {
+    class unit_card : public Card {
 
     };
 }
+
 
