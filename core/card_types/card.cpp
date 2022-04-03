@@ -8,11 +8,4 @@ namespace Core {
     Card::Card(int32_t cost, CARD_TYPE cardType) : cost(cost), cardType(cardType) {
     }
 
-    constexpr int32_t Card::GetCost() const {
-        return cost;
-    }
-
-    constexpr CARD_TYPE Card::GetCardType() const {
-        return cardType;
-    }
 }
