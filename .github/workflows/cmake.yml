@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, premaster ]
   pull_request:
     branches: [ master ]
 
