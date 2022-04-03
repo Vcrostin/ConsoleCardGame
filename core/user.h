@@ -9,18 +9,20 @@
 namespace Core {
     class User {
     protected:
-    private:
+    public:
         enum class UserStatus{
             USER = 0,
             MODERATOR = 1,
             ADMIN = 2
         };
-        uint64_t userId;
+    private:
+        std::string login;
         uint64_t sessionId;
         std::string userName;
         int32_t level;
         UserStatus userStatus;
     public:
-        User(uint64_t userId, uint64_t sessionId, const std::string_view& userName, int32_t lvl, UserStatus userStatus);
+        User(uint64_t sessionId, const std::string_view& userName, int32_t lvl,
+             UserStatus userStatus = Core::User::UserStatus::USER);
     };
 }
