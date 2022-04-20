@@ -4,9 +4,11 @@
 
 #pragma once
 #include "card.h"
+#include "unit_card.h"
 namespace Core {
-    class buff_card : public Core::Card {
-
+    class BuffCard : public Card{
+    public:
+        virtual bool Buff(UnitCard) = 0;
     };
 }
 

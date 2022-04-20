@@ -19,6 +19,7 @@ namespace Core {
     protected:
         static const int CARD_WIDTH = 30;
         static const int CARD_HEIGHT = 50;
+        bool cardUsable = true;
         Card(int32_t cost, CARD_TYPE cardType);
 
     public:
@@ -32,19 +33,17 @@ namespace Core {
             return cardType;
         }
 
-        [[nodiscard]]
-        inline virtual std::array<std::array<int,CARD_WIDTH>, CARD_HEIGHT> ShowCard() const {
-            return {{}};
-        }
+        //by the starting coordinates print cards from
+        // minicard will be consistant on whole sceen, although when u pick card u see it full screen
+        // virtual void print_card() = 0;
 
         // formatted output this is based
         // protected with args and use??
         // virtual still usefull
-        [[nodiscard]] virtual std::string ShowInfo() const = 0;
+        // [[nodiscard]] virtual std::string ShowInfo() const = 0;
 
     private:
         int32_t cost;
         CARD_TYPE cardType;
-
     };
 }
