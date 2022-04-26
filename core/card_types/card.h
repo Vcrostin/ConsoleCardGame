@@ -3,17 +3,25 @@
 //
 #pragma once
 #include <string>
+#include <array>
 
 namespace Core {
-    enum class CARD_TYPE {
-        UNKNOWN = 0,
-        COMMON = 1,
-        RARE = 2,
-        EPIC = 3,
-        LEGENDARY = 4
-    };
 
     class Card {
+    public:
+        enum class CARD_TYPE {
+            UNKNOWN = 0,
+            COMMON = 1,
+            RARE = 2,
+            EPIC = 3,
+            LEGENDARY = 4
+        };
+    protected:
+        static const int CARD_WIDTH = 30;
+        static const int CARD_HEIGHT = 50;
+        bool cardUsable = true;
+        Card(int32_t cost, CARD_TYPE cardType);
+
     public:
         [[nodiscard]]
         constexpr inline int32_t GetCost() const {
@@ -25,15 +33,17 @@ namespace Core {
             return cardType;
         }
 
-        [[nodiscard]] virtual std::string ShowInfo() const = 0;
+        //by the starting coordinates print cards from
+        // minicard will be consistant on whole sceen, although when u pick card u see it full screen
+        // virtual void print_card() = 0;
 
-    protected:
-
-        Card(int32_t cost, CARD_TYPE cardType);
+        // formatted output this is based
+        // protected with args and use??
+        // virtual still usefull
+        // [[nodiscard]] virtual std::string ShowInfo() const = 0;
 
     private:
         int32_t cost;
         CARD_TYPE cardType;
-
     };
 }
