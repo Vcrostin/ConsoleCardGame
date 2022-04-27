@@ -10,8 +10,8 @@ Core::UnitCard::UnitCard(int32_t health, int32_t attack, int32_t cost, CARD_TYPE
     curHealth = health;
 }
 
-void Core::UnitCard::Attack(Core::UnitCard& uc) const {
-    uc.curHealth -= curAttack;
+void Core::UnitCard::GetDamage(int32_t damage) {
+    curHealth -= damage;
 }
 
 void Core::UnitCard::AfterTurnActions() {
