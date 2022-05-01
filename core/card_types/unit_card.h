@@ -9,8 +9,8 @@
 namespace Core {
     class UnitCard : public Card {
     public:
-        UnitCard(int32_t health, int32_t attack, int32_t cost, CARD_TYPE cardType);
-        void GetDamage(int32_t);
+        UnitCard(int32_t health, int32_t attack, int32_t cost, CARD_RARITY cardType);
+        void TakeDamage(int32_t);
         inline void DeadAction() {
             cardUsable = false;
         }
@@ -24,6 +24,8 @@ namespace Core {
         int32_t curHealth;
         int32_t curAttack;
     };
+
+    extern bool UnitBoolType;
 }
 
 

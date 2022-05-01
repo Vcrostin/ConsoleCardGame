@@ -4,12 +4,13 @@
 #pragma once
 #include <string>
 #include <array>
+#include <vector>
 
 namespace Core {
 
     class Card {
     public:
-        enum class CARD_TYPE {
+        enum class CARD_RARITY {
             UNKNOWN = 0,
             COMMON = 1,
             RARE = 2,
@@ -20,7 +21,7 @@ namespace Core {
         static const int CARD_WIDTH = 30;
         static const int CARD_HEIGHT = 50;
         bool cardUsable = true;
-        Card(int32_t cost, CARD_TYPE cardType);
+        Card(int32_t cost, CARD_RARITY cardType);
 
     public:
         [[nodiscard]]
@@ -29,7 +30,7 @@ namespace Core {
         }
 
         [[nodiscard]]
-        constexpr inline CARD_TYPE GetCardType() const {
+        constexpr inline CARD_RARITY GetCardType() const {
             return cardType;
         }
 
@@ -44,6 +45,6 @@ namespace Core {
 
     private:
         int32_t cost;
-        CARD_TYPE cardType;
+        CARD_RARITY cardType;
     };
 }
