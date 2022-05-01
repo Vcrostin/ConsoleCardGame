@@ -5,7 +5,9 @@
 #include "card.h"
 
 namespace Core {
-    Card::Card(int32_t cost, CARD_TYPE cardType) : cost(cost), cardType(cardType) {
+    Card::Card(int32_t cost, CARD_RARITY cardType) : cost(cost), cardType(cardType) {
+        if (cardType == CARD_RARITY::UNKNOWN)
+            throw std::invalid_argument("Expected actual type, got default type");
     }
 
 }
