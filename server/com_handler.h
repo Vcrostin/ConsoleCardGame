@@ -38,12 +38,16 @@ public:
 
     void start()
     {
+        boost::system::error_code error;
+        sock.wait(boost::asio::ip::tcp::socket::wait_read, error);
         sock.async_read_some(
                 boost::asio::buffer(data, max_length),
                 boost::bind(&con_handler::handle_read,
                             shared_from_this(),
                             boost::asio::placeholders::error,
                             boost::asio::placeholders::bytes_transferred));
+
+        sock.wait(boost::asio::ip::tcp::socket::wait_write, error);
 
         sock.async_write_some(
                 boost::asio::buffer(message, max_length),
