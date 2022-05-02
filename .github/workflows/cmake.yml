@@ -31,7 +31,7 @@ jobs:
       run: |
         if [[ "$CACHE_HIT" == 'true' ]]; then
           sudo cp --force --recursive ~/boost/* /
-          cd ~/boost/ & ls
+          cd ~/boost/ && ls
         else
           sudo apt-get update && sudo apt-get install -yq libboost-all-dev
           mkdir -p ~/boost
