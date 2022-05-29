@@ -64,3 +64,14 @@ std::string replace_chars(std::string_view str, char new_delim, char delim) {
     }
     return res_string;
 }
+
+//TODO: tests
+std::vector<std::string_view> string_split(std::string_view str, uint32_t elemsPerSlice) {
+    auto vectorSize = str.size() % elemsPerSlice ? str.size() / elemsPerSlice + 1 : str.size() % elemsPerSlice;
+    std::vector<std::string_view> vct;
+    vct.reserve(vectorSize);
+    for (size_t i = 0; i < vectorSize; ++i) {
+        vct.push_back(str.substr(i * elemsPerSlice, (i + 1) * elemsPerSlice));
+    }
+    return vct;
+}
