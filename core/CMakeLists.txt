@@ -1,6 +1,7 @@
 project(HearthtoneConsoleLib)
 
 add_subdirectory(card_types)
+add_subdirectory(configurations)
 
 add_library(HearthtoneConsoleLib
         board.cpp board.h
