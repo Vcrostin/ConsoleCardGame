@@ -142,3 +142,33 @@ TEST(test_string_split, test_split_by_number_two) {
         ASSERT_EQ(string_expected[i], split_str[i]);
     }
 }
+
+TEST(test_string_split, test_split_by_number_one_russian) {
+    std::string str = "абвгдез";
+    auto split_str = string_split(str, 1u);
+    std::string new_str;
+    for (auto s : split_str) {
+        new_str += s;
+    }
+    ASSERT_EQ(str, new_str);
+}
+
+TEST(test_string_split, test_split_by_number_two_russian) {
+    std::string str = "абвгдез";
+    auto split_str = string_split(str, 2u);
+    std::string new_str;
+    for (auto s : split_str) {
+        new_str += s;
+    }
+    ASSERT_EQ(str, new_str);
+}
+
+TEST(test_string_split, test_split_by_number_three_russian) {
+    std::string str = "абвгдез";
+    auto split_str = string_split(str, 3u);
+    std::string new_str;
+    for (auto s : split_str) {
+        new_str += s;
+    }
+    ASSERT_EQ(str, new_str);
+}
