@@ -7,21 +7,25 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include <queue>
+#include <deque>
+#include <iomanip>
+#include "../core/utils/string_assist.h"
 
 using namespace boost::asio;
 using ip::tcp;
 using std::cout;
+using std::cerr;
 using std::endl;
 
 class con_handler : public boost::enable_shared_from_this<con_handler>
 {
 private:
     tcp::socket sock;
+    boost::asio::io_service::strand m_strand;
     std::string message="Hello From Server!";
-    enum { max_length = 1024 };
+    enum { max_length = 1000 };
     char data[max_length];
-    explicit con_handler(boost::asio::io_service& io_service): sock(io_service){}
+    explicit con_handler(boost::asio::io_service& io_service): sock(io_service), m_strand(io_service){}
 
 
 public:
@@ -42,39 +46,49 @@ public:
         boost::system::error_code error;
         sock.wait(boost::asio::ip::tcp::socket::wait_read, error);
         sock.async_read_some(
-                boost::asio::buffer(data, max_length),
-                boost::bind(&con_handler::handle_read,
-                            shared_from_this(),
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred));
+            boost::asio::buffer(data, max_length),
+            m_strand.wrap(boost::bind(&con_handler::handle_read,
+                shared_from_this(),
+                boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred)));
 
-        sock.wait(boost::asio::ip::tcp::socket::wait_write, error);
-
-        sock.async_write_some(
-                boost::asio::buffer(message, max_length),
-                boost::bind(&con_handler::handle_write,
-                            shared_from_this(),
-                            boost::asio::placeholders::error,
-                            boost::asio::placeholders::bytes_transferred));
     }
 
+private:
     void handle_read(const boost::system::error_code& err, size_t bytes_transferred)
     {
         if (!err) {
-            cout << data << endl;
+            std::deque<std::string> queryData;
+            std::string std_dt = data;
+            auto split_std_dt = string_split(std_dt);
+            int32_t num = std::stoi(split_std_dt[0].data());
+            int32_t num_of_elem = std::stoi(split_std_dt[1].data());
+            cerr << num << " with num of element " << num_of_elem << " with hash " << split_std_dt[2] << endl;
+            sock.wait(boost::asio::socket_base::wait_write);
+            sock.write_some(boost::asio::buffer(message, max_length));
+            for (int i = 0; i < num; ++i) {
+                sock.wait(boost::asio::socket_base::wait_read);
+                sock.read_some(boost::asio::buffer(data, max_length));
+                sock.wait(boost::asio::socket_base::wait_write);
+                sock.write_some(boost::asio::buffer(message, max_length));
+                if (i != num - 1) {
+                    queryData.emplace_back(data, data + max_length);
+                }
+                else {
+                    queryData.emplace_back(data, data + num_of_elem);
+                }
+            }
+            cerr << "New query:" << endl;
+            std::string res;
+            for (const auto& q : queryData) {
+                cerr << q;
+                res += q;
+            }
+            cout << endl << res << endl;
+
         } else {
             std::cerr << "error: " << err.message() << std::endl;
             sock.close();
         }
     }
-    void handle_write(const boost::system::error_code& err, size_t bytes_transferred)
-    {
-        if (!err) {
-            cout << "Server sent Hello message!"<< endl;
-        } else {
-            std::cerr << "error: " << err.message() << endl;
-            sock.close();
-        }
-    }
 };
-

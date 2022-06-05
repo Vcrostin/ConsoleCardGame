@@ -9,6 +9,8 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/uuid/detail/md5.hpp>
+#include <boost/algorithm/hex.hpp>
 #include "../core/utils/string_assist.h"
 
 using namespace boost::asio;
@@ -16,6 +18,14 @@ using ip::tcp;
 using std::cerr;
 using std::cout;
 using std::endl;
+using boost::uuids::detail::md5;
+
+inline std::string toString(const md5::digest_type &digest) {
+    const auto charDigest = reinterpret_cast<const char *>(&digest);
+    std::string result;
+    boost::algorithm::hex(charDigest, charDigest + sizeof(md5::digest_type), std::back_inserter(result));
+    return result;
+}
 
 class ClientSender : public boost::enable_shared_from_this<ClientSender> {
 public:
@@ -27,24 +37,45 @@ public:
         return ptr;
     }
 
-    void AddMessage(std::string_view sendingData, uint32_t charsPerIter=1024) {
+    void AddMessage(std::string_view sendingData, uint32_t charsPerIter=max_length) {
         auto splitStr = string_split(sendingData, charsPerIter);
-        for (auto& str : splitStr) {
+        if (splitStr.empty()) {
+            //TODO: make custom exception classes
+            throw std::invalid_argument("u tried to send an empty string");
+        }
+        md5 hash;
+        md5::digest_type digest;
+        hash.process_bytes(sendingData.data(), sendingData.size());
+        hash.get_digest(digest);
+        q.push((std::to_string(splitStr.size()) + " " + std::to_string(sendingData.size() - charsPerIter * (splitStr.size() - 1)) + " " + toString(digest)));
+        for (auto str : splitStr) {
             q.push(std::string(str));
         }
     }
 
     void SendAll() {
+        char data[max_length];
         cerr << "Starting sending data " << q.size() << " total ..." << endl;
-        sendingDataCount = static_cast<int32_t>(q.size());
-        if (sendingDataCount > 0) {
-            StartupWrite();
+        boost::asio::streambuf receive_buffer;
+        _socket.wait(boost::asio::socket_base::wait_write);
+        _socket.write_some(boost::asio::buffer(q.front(), max_length));
+        q.pop();
+        _socket.wait(boost::asio::socket_base::wait_read);
+        _socket.read_some(boost::asio::buffer(data, max_length));
+        size_t num_of_pack = q.size();
+        for (size_t i = 0; i < num_of_pack; i++) {
+            _socket.wait(boost::asio::socket_base::wait_write);
+            _socket.write_some(boost::asio::buffer(q.front(), max_length));
+            _socket.wait(boost::asio::socket_base::wait_read);
+            _socket.read_some(boost::asio::buffer(data, max_length));
+            q.pop();
+
         }
         cerr << "Data sent" << endl;
     }
 
 private:
-    explicit ClientSender(boost::asio::io_service& ioService) : _ioService(ioService), _socket(ioService) {
+    explicit ClientSender(boost::asio::io_service& ioService) : _ioService(ioService), _socket(_ioService) {
     }
 
     const inline static std::string IP_ADDRESS = "127.0.0.1";
@@ -53,57 +84,7 @@ private:
         _socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(IP_ADDRESS), 1234));
     }
 
-    void StartupWrite() {
-        _socket.wait(boost::asio::ip::tcp::socket::wait_write);
-        _socket.write_some(boost::asio::buffer(std::to_string(sendingDataCount)));
-        WaitWriteFunction();
-    }
-    void WaitWriteFunction() {
-        _socket.async_wait(
-            boost::asio::ip::tcp::socket::wait_write,
-            boost::bind(
-                &ClientSender::WaitHandler,
-                shared_from_this(),
-                boost::asio::placeholders::error())
-        );
-    }
-    void WaitHandler (const boost::system::error_code& error) {
-        if (!error) {
-            WriteFunction();
-        }
-        else {
-            cerr << error.message() << endl;
-        }
-    }
-    void WriteFunction() {
-        boost::asio::async_write(
-            _socket,
-            boost::asio::buffer(q.front()),
-            boost::bind(
-                &ClientSender::WriteHandler,
-                shared_from_this(),
-                boost::asio::placeholders::error(),
-                boost::asio::placeholders::bytes_transferred()
-            )
-        );
-    }
-    void WriteHandler(const boost::system::error_code& error, size_t bytes_transferred) {
-        if (!error) {
-            q.pop();
-            sendingDataCount--;
-//            _socket.wait(boost::asio::ip::tcp::socket::wait_read);
-//            boost::asio::streambuf receive_buffer;
-//            read(_socket, receive_buffer, boost::asio::transfer_all());
-            if (sendingDataCount > 0 && !q.empty()) {
-                WaitWriteFunction();
-            }
-        }
-        else {
-            cerr << error.message() << endl;
-        }
-    }
-    int32_t sendingDataCount = 0;
-    enum { max_length = 1024 };
+    enum { max_length = 1000 };
     io_service& _ioService;
     tcp::socket _socket;
     std::queue<std::string> q;
