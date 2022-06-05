@@ -85,6 +85,7 @@ private:
                 res += q;
             }
             cout << endl << res << endl;
+
         } else {
             std::cerr << "error: " << err.message() << std::endl;
             sock.close();

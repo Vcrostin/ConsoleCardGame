@@ -69,6 +69,7 @@ public:
             _socket.wait(boost::asio::socket_base::wait_read);
             _socket.read_some(boost::asio::buffer(data, max_length));
             q.pop();
+
         }
         cerr << "Data sent" << endl;
     }

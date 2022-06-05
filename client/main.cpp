@@ -51,6 +51,5 @@ int main() {
     clientSender->AddMessage(msg);
     clientSender->SendAll();
     ioService.run();
-
     return 0;
 }
