@@ -122,3 +122,23 @@ TEST(test_string_split, test_multi_splitted_string_to_parts_with_custom_delim) {
         ASSERT_EQ(string_expected[i], split_str[i]);
     }
 }
+
+TEST(test_string_split, test_split_by_number_one) {
+    std::string str = "abcdefgh";
+    std::vector string_expected = {"a", "b", "c", "d", "e", "f", "g", "h"};
+    auto split_str = string_split(str, 1u);
+    ASSERT_EQ(str.size(), split_str.size());
+    for (int i = 0; i < string_expected.size(); ++i) {
+        ASSERT_EQ(string_expected[i], split_str[i]);
+    }
+}
+
+TEST(test_string_split, test_split_by_number_two) {
+    std::string str = "abcdefghi";
+    std::vector string_expected = {"ab", "cd", "ef", "gh", "i"};
+    auto split_str = string_split(str, 2u);
+    ASSERT_EQ(string_expected.size(), split_str.size());
+    for (int i = 0; i < string_expected.size(); ++i) {
+        ASSERT_EQ(string_expected[i], split_str[i]);
+    }
+}
