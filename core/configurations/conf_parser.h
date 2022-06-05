@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -34,7 +35,7 @@ private:
         while(std::getline(fin, line)) {
             std::istringstream curLine(line);
             if (std::string type; std::getline(curLine, type, ':')) {
-                if (std::string key; std::getline(curLine, type, '=')) {
+                if (std::string key; std::getline(curLine, key, '=')) {
                     if (std::string value; std::getline(curLine, value)) {
                         if (type == "int32") {
                             dict[key] = std::stoi(value);
@@ -51,6 +52,9 @@ private:
 public:
     typedef variant<int32_t, string> valueType;
     explicit ConfParser(const string& fileName) : fin(fileName) {
+        if (!fin.is_open()) {
+            throw std::invalid_argument("file not found");
+        }
         ParseFile();
     }
 
@@ -78,3 +82,6 @@ std::ostream& operator << (std::ostream& stream, const ConfParser& confParser) {
     stream.flush();
     return stream;
 }
+
+// TODO: ether ad correct path to configure directory ether copy file to specific directory each time
+std::string CONF_PATH = std::filesystem::current_path();
