@@ -2,7 +2,7 @@
 // Created by brostin on 02.04.2022.
 //
 
-#include "../../core/utils/string_assist.h"
+#include "../../../core/utils/string_assist.h"
 #include "gtest/gtest.h"
 #include <string_view>
 #include <string>
