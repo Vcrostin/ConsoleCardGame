@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include <string>
 #include <iostream>
 #include <queue>
@@ -31,13 +32,13 @@ class ClientSender : public boost::enable_shared_from_this<ClientSender> {
 public:
     typedef boost::shared_ptr<ClientSender> pointer;
 
-    static pointer NewClient(boost::asio::io_service& ioService) {
+    static pointer NewClient(boost::asio::io_service &ioService) {
         auto ptr = pointer(new ClientSender(ioService));
         ptr->Connect();
         return ptr;
     }
 
-    void AddMessage(std::string_view sendingData, uint32_t charsPerIter=max_length) {
+    void AddMessage(std::string_view sendingData, uint32_t charsPerIter = max_length) {
         auto splitStr = string_split(sendingData, charsPerIter);
         if (splitStr.empty()) {
             //TODO: make custom exception classes
@@ -47,8 +48,9 @@ public:
         md5::digest_type digest;
         hash.process_bytes(sendingData.data(), sendingData.size());
         hash.get_digest(digest);
-        q.push((std::to_string(splitStr.size()) + " " + std::to_string(sendingData.size() - charsPerIter * (splitStr.size() - 1)) + " " + toString(digest)));
-        for (auto str : splitStr) {
+        q.push((std::to_string(splitStr.size()) + " " +
+                std::to_string(sendingData.size() - charsPerIter * (splitStr.size() - 1)) + " " + toString(digest)));
+        for (auto str: splitStr) {
             q.push(std::string(str));
         }
     }
@@ -75,7 +77,7 @@ public:
     }
 
 private:
-    explicit ClientSender(boost::asio::io_service& ioService) : _ioService(ioService), _socket(_ioService) {
+    explicit ClientSender(boost::asio::io_service &ioService) : _ioService(ioService), _socket(_ioService) {
     }
 
     const inline static std::string IP_ADDRESS = "127.0.0.1";
@@ -84,8 +86,10 @@ private:
         _socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(IP_ADDRESS), 1234));
     }
 
-    enum { max_length = 1000 };
-    io_service& _ioService;
+    enum {
+        max_length = 1000
+    };
+    io_service &_ioService;
     tcp::socket _socket;
     std::queue<std::string> q;
 };

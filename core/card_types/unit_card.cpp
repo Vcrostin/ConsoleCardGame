@@ -5,7 +5,8 @@
 #include "card_type.h"
 #include "unit_card.h"
 
-Core::UnitCard::UnitCard(int32_t health, int32_t attack, int32_t cost, CARD_RARITY cardType) : maxHealth(health), maxAttack(attack),
+Core::UnitCard::UnitCard(int32_t health, int32_t attack, int32_t cost, CARD_RARITY cardType) : maxHealth(health),
+                                                                                               maxAttack(attack),
                                                                                                Card(cost, cardType) {
     curAttack = attack;
     curHealth = health;
@@ -20,5 +21,5 @@ void Core::UnitCard::AfterTurnActions() {
         DeadAction();
 }
 
-[[maybe_unused]] bool UnitBoolType = Core::CardType::getInstance()->AddType("UnitCard", [](){
+[[maybe_unused]] bool UnitBoolType = Core::CardType::getInstance()->AddType("UnitCard", []() {
 });

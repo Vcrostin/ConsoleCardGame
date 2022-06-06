@@ -21,9 +21,9 @@ namespace Core {
         static std::shared_ptr<CardType> getInstance();
 
         /// string: card type, function: action
-        bool AddType(const std::string&, const std::function<void()>&);
+        bool AddType(const std::string &, const std::function<void()> &);
 
-        #pragma region iterators
+#pragma region iterators
 
         decltype(auto) begin() {
             return vct.begin();
@@ -41,15 +41,15 @@ namespace Core {
             return vct.end();
         }
 
-        #pragma endregion
+#pragma endregion
 
-        #pragma region operators
+#pragma region operators
 
-        std::function<void()>& operator [](const std::string& str);
+        std::function<void()> &operator[](const std::string &str);
 
-        std::function<void()> operator [](const std::string& str) const = delete;
+        std::function<void()> operator[](const std::string &str) const = delete;
 
-        #pragma endregion
+#pragma endregion
 
 
     private:
