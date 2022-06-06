@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include <iostream>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -17,46 +18,46 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-class con_handler : public boost::enable_shared_from_this<con_handler>
-{
+class con_handler : public boost::enable_shared_from_this<con_handler> {
 private:
     tcp::socket sock;
     boost::asio::io_service::strand m_strand;
-    std::string message="Hello From Server!";
-    enum { max_length = 1000 };
+    std::string message = "Hello From Server!";
+    enum {
+        max_length = 1000
+    };
     char data[max_length];
-    explicit con_handler(boost::asio::io_service& io_service): sock(io_service), m_strand(io_service){}
+
+    explicit con_handler(boost::asio::io_service &io_service) : sock(io_service), m_strand(io_service) {}
 
 
 public:
     typedef boost::shared_ptr<con_handler> pointer;
+
     // creating the pointer
-    static pointer create(boost::asio::io_service& io_service)
-    {
+    static pointer create(boost::asio::io_service &io_service) {
         return pointer(new con_handler(io_service));
     }
+
 //socket creation
-    tcp::socket& socket()
-    {
+    tcp::socket &socket() {
         return sock;
     }
 
-    void start()
-    {
+    void start() {
         boost::system::error_code error;
         sock.wait(boost::asio::ip::tcp::socket::wait_read, error);
         sock.async_read_some(
-            boost::asio::buffer(data, max_length),
-            m_strand.wrap(boost::bind(&con_handler::handle_read,
-                shared_from_this(),
-                boost::asio::placeholders::error,
-                boost::asio::placeholders::bytes_transferred)));
+                boost::asio::buffer(data, max_length),
+                m_strand.wrap(boost::bind(&con_handler::handle_read,
+                                          shared_from_this(),
+                                          boost::asio::placeholders::error,
+                                          boost::asio::placeholders::bytes_transferred)));
 
     }
 
 private:
-    void handle_read(const boost::system::error_code& err, size_t bytes_transferred)
-    {
+    void handle_read(const boost::system::error_code &err, size_t bytes_transferred) {
         if (!err) {
             std::deque<std::string> queryData;
             std::string std_dt = data;
@@ -73,14 +74,13 @@ private:
                 sock.write_some(boost::asio::buffer(message, max_length));
                 if (i != num - 1) {
                     queryData.emplace_back(data, data + max_length);
-                }
-                else {
+                } else {
                     queryData.emplace_back(data, data + num_of_elem);
                 }
             }
             cerr << "New query:" << endl;
             std::string res;
-            for (const auto& q : queryData) {
+            for (const auto &q: queryData) {
                 cerr << q;
                 res += q;
             }

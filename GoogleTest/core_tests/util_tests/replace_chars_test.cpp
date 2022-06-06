@@ -15,12 +15,12 @@ TEST(replace_chars_test, empty) {
 }
 
 TEST(replace_chars_test, all_the_same) {
-    for (size_t i = 0; i < 1000 ; i++) {
+    for (size_t i = 0; i < 1000; i++) {
         std::string str = multiply_string("a", i);
         ASSERT_EQ(replace_chars(str, 'b', 'a'), multiply_string("b", i));
     }
 
-    for (size_t i = 0; i < 1000 ; i++) {
+    for (size_t i = 0; i < 1000; i++) {
         std::string str = multiply_string("c", i);
         ASSERT_EQ(replace_chars(str, 'b', 'a'), multiply_string("c", i));
     }

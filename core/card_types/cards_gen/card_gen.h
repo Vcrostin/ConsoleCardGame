@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include <unordered_map>
 #include "../card.h"
 #include <string>
@@ -10,6 +11,6 @@
 namespace Core::Gen {
     class CardGen {
     public:
-        constexpr CardGen(const std::string&, std::unordered_map<std::string, std::string>&);
+        constexpr CardGen(const std::string &, std::unordered_map<std::string, std::string> &);
     };
 }

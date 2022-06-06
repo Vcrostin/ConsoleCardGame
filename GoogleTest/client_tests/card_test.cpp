@@ -19,13 +19,14 @@ namespace {
 }
 
 TEST(cards_test, throw_init) {
-    EXPECT_ANY_THROW(Core::BuffCard buffCard(0, 0, Core::Card::CARD_RARITY::UNKNOWN, [](Core::UnitCard&){return true;}));
+    EXPECT_ANY_THROW(
+            Core::BuffCard buffCard(0, 0, Core::Card::CARD_RARITY::UNKNOWN, [](Core::UnitCard &) { return true; }));
     EXPECT_ANY_THROW(Core::DamageCard damageCard(0, 0, Core::Card::CARD_RARITY::UNKNOWN));
-    EXPECT_ANY_THROW(Core::UnitCard unitCard(0, 0, 0 ,Core::Card::CARD_RARITY::UNKNOWN));
-    for (const auto& cardType : ::cardTypes) {
-        EXPECT_NO_THROW(Core::BuffCard buffCard(0, 0, cardType, [](Core::UnitCard&){return true;}));
+    EXPECT_ANY_THROW(Core::UnitCard unitCard(0, 0, 0, Core::Card::CARD_RARITY::UNKNOWN));
+    for (const auto &cardType: ::cardTypes) {
+        EXPECT_NO_THROW(Core::BuffCard buffCard(0, 0, cardType, [](Core::UnitCard &) { return true; }));
         EXPECT_NO_THROW(Core::DamageCard damageCard(0, 0, cardType));
-        EXPECT_NO_THROW(Core::UnitCard unitCard(0, 0, 0 ,cardType));
+        EXPECT_NO_THROW(Core::UnitCard unitCard(0, 0, 0, cardType));
     }
 }
 

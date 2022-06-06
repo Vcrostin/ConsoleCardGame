@@ -12,7 +12,7 @@ std::shared_ptr<Core::CardType> Core::CardType::getInstance() {
     return CardType::CurInstance;
 }
 
-bool Core::CardType::AddType(const std::string& str, const std::function<void()>& fc) {
+bool Core::CardType::AddType(const std::string &str, const std::function<void()> &fc) {
     if (vct.contains(str)) {
         return false;
     }
@@ -20,8 +20,8 @@ bool Core::CardType::AddType(const std::string& str, const std::function<void()>
     return true;
 }
 
-std::function<void()> &Core::CardType::operator[](const std::string& str) {
-    if (vct.count(str) > 0){
+std::function<void()> &Core::CardType::operator[](const std::string &str) {
+    if (vct.count(str) > 0) {
         return vct[str];
     }
     throw std::invalid_argument("This type does not exit in dictionary");

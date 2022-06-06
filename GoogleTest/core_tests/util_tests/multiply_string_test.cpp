@@ -19,9 +19,9 @@ TEST(multiply_string_test, basic_single) {
     for (size_t i = 0; i < 1000; i++) {
         auto mp = multiply_string(str, i);
         ASSERT_EQ(mp.size(), str.size() * i);
-        for (size_t j = 0; j < mp.size(); j+= str.size()) {
+        for (size_t j = 0; j < mp.size(); j += str.size()) {
             for (size_t k = j; k < j + str.size(); k++) {
-                ASSERT_EQ(str[k % str.size()], mp [k]);
+                ASSERT_EQ(str[k % str.size()], mp[k]);
             }
         }
     }
@@ -32,9 +32,9 @@ TEST(multiply_string_test, basic_multi) {
     for (size_t i = 0; i < 1000; i++) {
         auto mp = multiply_string(str, i);
         ASSERT_EQ(mp.size(), str.size() * i);
-        for (size_t j = 0; j < mp.size(); j+= str.size()) {
+        for (size_t j = 0; j < mp.size(); j += str.size()) {
             for (size_t k = j; k < j + str.size(); k++) {
-                ASSERT_EQ(str[k % str.size()], mp [k]);
+                ASSERT_EQ(str[k % str.size()], mp[k]);
             }
         }
     }

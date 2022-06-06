@@ -14,6 +14,7 @@ namespace Core {
     class Board {
     public:
         Board();
+
     private:
         std::unique_ptr<User> cur_user;
         std::unique_ptr<User> opponent_user;

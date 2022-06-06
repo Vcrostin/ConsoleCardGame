@@ -101,7 +101,7 @@ TEST(test_string_split, test_splitted_string_to_parts_with_custom_delim2) {
 
 TEST(test_string_split, test_multi_splitted_string_to_parts) {
     std::string str = " a    b c    d e   f a    b c d     e f  ";
-    std::vector string_expected = {"a","b","c","d","e","f", "a","b","c","d","e","f"};
+    std::vector string_expected = {"a", "b", "c", "d", "e", "f", "a", "b", "c", "d", "e", "f"};
     auto split_str = string_split(str);
     ASSERT_EQ(split_str.size(), string_expected.size());
 
@@ -113,7 +113,7 @@ TEST(test_string_split, test_multi_splitted_string_to_parts) {
 
 TEST(test_string_split, test_multi_splitted_string_to_parts_with_custom_delim) {
     std::string str = ":a::::b::c:::d::e::::f::a::::b:c::d::::e:f:";
-    std::vector string_expected = {"a","b","c","d","e","f", "a","b","c","d","e","f"};
+    std::vector string_expected = {"a", "b", "c", "d", "e", "f", "a", "b", "c", "d", "e", "f"};
     auto split_str = string_split(str, ':');
     ASSERT_EQ(split_str.size(), string_expected.size());
 
@@ -147,7 +147,7 @@ TEST(test_string_split, test_split_by_number_one_russian) {
     std::string str = "абвгдез";
     auto split_str = string_split(str, 1u);
     std::string new_str;
-    for (auto s : split_str) {
+    for (auto s: split_str) {
         new_str += s;
     }
     ASSERT_EQ(str, new_str);
@@ -157,7 +157,7 @@ TEST(test_string_split, test_split_by_number_two_russian) {
     std::string str = "абвгдез";
     auto split_str = string_split(str, 2u);
     std::string new_str;
-    for (auto s : split_str) {
+    for (auto s: split_str) {
         new_str += s;
     }
     ASSERT_EQ(str, new_str);
@@ -167,7 +167,7 @@ TEST(test_string_split, test_split_by_number_three_russian) {
     std::string str = "абвгдез";
     auto split_str = string_split(str, 3u);
     std::string new_str;
-    for (auto s : split_str) {
+    for (auto s: split_str) {
         new_str += s;
     }
     ASSERT_EQ(str, new_str);

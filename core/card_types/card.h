@@ -2,6 +2,7 @@
 // Created by brostin on 08.03.2022.
 //
 #pragma once
+
 #include <string>
 #include <array>
 #include <vector>
@@ -21,6 +22,7 @@ namespace Core {
         static const int CARD_WIDTH = 30;
         static const int CARD_HEIGHT = 50;
         bool cardUsable = true;
+
         Card(int32_t cost, CARD_RARITY cardType);
 
     public:
