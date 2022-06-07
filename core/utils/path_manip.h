@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <filesystem>
 #include <functional>
 #include <string>
@@ -14,11 +15,53 @@
 using std::string;
 using std::string_view;
 
-/// TODO: Add concatenate path function
 class PathManip {
 public:
-    explicit PathManip(const string &path = std::filesystem::current_path()) {
+    explicit PathManip(const string &path = std::filesystem::current_path()) : curPath(path) {
         ParsePath();
+    }
+
+    string ConcatenateAbsolute(const PathManip &pm) {
+        for (int64_t i = static_cast<int64_t>(std::min(pm.pathNodes.size(), this->pathNodes.size())); i >= 0; --i) {
+            if (pm.pathNodes[i].sumHash == this->pathNodes[i].sumHash &&
+                pm.pathNodes[i].partHash == this->pathNodes[i].partHash &&
+                pm.pathNodes[i].pathPart == this->pathNodes[i].pathPart) {
+                this->pathNodes.erase(this->pathNodes.begin() + i + 1, this->pathNodes.end());
+                for (int64_t j = i + 1; j < static_cast<int64_t>(pm.pathNodes.size()); ++j) {
+                    this->pathNodes.emplace_back(pm.pathNodes[j]);
+                }
+                curPath = "";
+                for (const auto &s: this->pathNodes) {
+                    curPath += "/" + s.pathPart;
+                }
+                return curPath;
+            }
+        }
+        curPath = pm.curPath;
+        pathNodes = pm.pathNodes;
+        return curPath;
+    }
+
+    string ConcatenateByLastPart(const PathManip &pm) {
+        for (int64_t i = static_cast<int64_t>(this->pathNodes.size()); i >= 0; --i) {
+            if (pm.pathNodes.front().partHash == this->pathNodes[i].partHash &&
+                pm.pathNodes.front().pathPart == this->pathNodes[i].pathPart) {
+                size_t shift = 1;
+                while (pm.pathNodes.size() > shift && pm.pathNodes[shift].pathPart == "*") {
+                    ++shift;
+                }
+                this->pathNodes.erase(this->pathNodes.begin() + i + shift, this->pathNodes.end());
+                for (int64_t j = shift; j < static_cast<int64_t>(pm.pathNodes.size()); ++j) {
+                    this->pathNodes.emplace_back(pm.pathNodes[j]);
+                }
+                curPath = "";
+                for (const auto &s: this->pathNodes) {
+                    curPath += "/" + s.pathPart;
+                }
+                return curPath;
+            }
+        }
+        return curPath;
     }
 
 private:
