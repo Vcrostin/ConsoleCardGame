@@ -10,4 +10,4 @@ add_executable(server
         com_handler.cpp com_handler.h
         main.cpp server.cpp server.h)
 target_link_libraries(server ${Boost_LIBRARIES})
-target_link_libraries(server HearthtoneConsoleLib Cards)
+target_link_libraries(server HearthtoneConsoleLib HearthtoneConf)

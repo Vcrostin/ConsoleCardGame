@@ -13,6 +13,7 @@
 #include <boost/uuid/detail/md5.hpp>
 #include <boost/algorithm/hex.hpp>
 #include "../core/utils/string_assist.h"
+#include "../core/configurations/all_configs.h"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -56,20 +57,20 @@ public:
     }
 
     void SendAll() {
-        char data[max_length];
+        std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
         cerr << "Starting sending data " << q.size() << " total ..." << endl;
         boost::asio::streambuf receive_buffer;
         _socket.wait(boost::asio::socket_base::wait_write);
         _socket.write_some(boost::asio::buffer(q.front(), max_length));
         q.pop();
         _socket.wait(boost::asio::socket_base::wait_read);
-        _socket.read_some(boost::asio::buffer(data, max_length));
+        _socket.read_some(boost::asio::buffer(data.get(), max_length));
         size_t num_of_pack = q.size();
         for (size_t i = 0; i < num_of_pack; i++) {
             _socket.wait(boost::asio::socket_base::wait_write);
             _socket.write_some(boost::asio::buffer(q.front(), max_length));
             _socket.wait(boost::asio::socket_base::wait_read);
-            _socket.read_some(boost::asio::buffer(data, max_length));
+            _socket.read_some(boost::asio::buffer(data.get(), max_length));
             q.pop();
 
         }
