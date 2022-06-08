@@ -21,6 +21,10 @@ public:
         ParsePath();
     }
 
+    string GetCurPath() const {
+        return curPath;
+    }
+
     string ConcatenateAbsolute(const PathManip &pm) {
         for (int64_t i = static_cast<int64_t>(std::min(pm.pathNodes.size(), this->pathNodes.size())); i >= 0; --i) {
             if (pm.pathNodes[i].sumHash == this->pathNodes[i].sumHash &&

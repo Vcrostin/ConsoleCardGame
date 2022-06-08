@@ -86,5 +86,4 @@ std::ostream &operator<<(std::ostream &stream, const ConfParser &confParser) {
     return stream;
 }
 
-// TODO: ether ad correct path to configure directory ether copy file to specific directory each time
 std::string CONF_PATH = PathManip().ConcatenateByLastPart(PathManip{"HearthtoneConsole/*/core/configurations"});
