@@ -60,11 +60,11 @@ public:
         ParseFile();
     }
 
-    int32_t GetInt(const string &key) {
+    int32_t GetInt(const string &key) const {
         return get<int32_t>(GetValue(key));
     }
 
-    string GetString(const string &key) {
+    string GetString(const string &key) const {
         return get<string>(GetValue(key));
     }
 
@@ -75,15 +75,8 @@ private:
     unordered_map<string, valueType> dict;
 };
 
-std::ostream &operator<<(std::ostream &stream, const ConfParser &confParser) {
-    for (const auto &[key, value]: confParser.dict) {
-        stream << "|" << std::left << std::setw(14) << key << "|";
-        std::visit([&stream](const auto &val) {
-            stream << std::left << std::setw(14) << val << "|\n";
-        }, value);
-    }
-    stream.flush();
-    return stream;
-}
+std::ostream &operator<<(std::ostream &stream, const ConfParser &confParser);
 
-std::string CONF_PATH = PathManip().ConcatenateByLastPart(PathManip{"HearthtoneConsole/*/core/configurations"});
+// TODO: remove global variables
+const std::string CONF_PATH = PathManip().ConcatenateByLastPart(PathManip{"HearthtoneConsole/*/core/configurations"});
+
