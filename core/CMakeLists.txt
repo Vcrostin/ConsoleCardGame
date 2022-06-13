@@ -1,9 +1,9 @@
-project(HearthtoneConsoleLib)
+project(console_card_lib)
 
 add_subdirectory(card_types)
 add_subdirectory(configurations)
 
-add_library(HearthtoneConsoleLib
+add_library(ConsoleCardLib
         board.cpp board.h
         user.cpp user.h
         utils/string_assist.cpp
