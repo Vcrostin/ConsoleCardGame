@@ -9,7 +9,7 @@
 #include <functional>
 
 namespace Core {
-    class BuffCard : public Card {
+    class [[deprecated]] BuffCard : public Card {
     public:
         BuffCard(int32_t buffValue, int32_t cost, CARD_RARITY cardType, std::function<bool(UnitCard &)> fc);
 
