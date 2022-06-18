@@ -11,7 +11,7 @@ def camel_to_snake(name):
 if __name__ != '__main__':
     raise RuntimeError("This script supposed to run on its own")
 
-LIST_OF_DATA = [["UnitCard", "Unit", 1, 1, "COMMON"], ]
+LIST_OF_DATA = [["UnitCard", "Unit", 1, 1, 1, "COMMON"], ]
 
 dir_path = os.path.join(os.path.dirname(os.getcwd()), "generated_cards")
 print(dir_path)
@@ -61,6 +61,18 @@ namespace Core {{
 """
 
 
+def generate_arguments_base(lst_of_args):
+    type_arg = lst_of_args[-1]
+    other_args = []
+    for arg in lst_of_args[:-1]:
+        if isinstance(arg, int):
+            other_args.append(f"{arg}")
+        else:
+            raise NotImplemented("Unsupported type")
+    other_args.append(f"Core::Card::CARD_RARITY::{type_arg}")
+    return ", ".join(other_args)
+
+
 # TODO: add parser base and cur classes
 def generate_source(camel_base, camel_new, arguments_base, initialization_list_arguments):
     snake_new = camel_to_snake(camel_new)
@@ -74,4 +86,4 @@ def generate_source(camel_base, camel_new, arguments_base, initialization_list_a
 # TODO: add cmake file
 for ls in LIST_OF_DATA:
     generate_header(ls[0], ls[1])
-    generate_source(ls[0], ls[1], "", "")
+    generate_source(ls[0], ls[1], "", generate_arguments_base(ls[2:]))
