@@ -1,6 +1,9 @@
 import os
 import re
 import shutil
+import mariadb
+import sys
+import json
 
 
 def camel_to_snake(name):
@@ -11,7 +14,30 @@ def camel_to_snake(name):
 if __name__ != '__main__':
     raise RuntimeError("This script supposed to run on its own")
 
-LIST_OF_DATA = [["UnitCard", "Unit", 1, 1, 1, "COMMON"], ]
+try:
+    conn_params = {
+        'user': "root",
+        'host': "127.0.0.1",
+        'port': 3306,
+        'database': "card_gen"
+    }
+
+    # establish a connection
+    connection = mariadb.connect(**conn_params)
+    cursor = connection.cursor()
+except mariadb.Error as e:
+    print(f"Error connecting to the database: {e}")
+    sys.exit(1)
+query = f"SELECT * FROM card_gen"
+cursor.execute(query)
+rows = cursor.fetchall()
+connection.close()
+LIST_OF_DATA = []
+for x in rows:
+    j = json.loads(x[3])
+    LIST_OF_DATA.append(list(x[1:3]))
+    for el in j:
+        LIST_OF_DATA[-1].append(el)
 
 dir_path = os.path.join(os.path.dirname(os.getcwd()), "generated_cards")
 print(dir_path)
