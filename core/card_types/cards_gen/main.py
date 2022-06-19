@@ -16,10 +16,11 @@ if __name__ != '__main__':
 
 try:
     conn_params = {
-        'user': "root",
-        'host': "127.0.0.1",
+        'user': "guest",
+        'host': "45.141.101.11",
         'port': 3306,
-        'database': "card_gen"
+        'database': "card_gen",
+        'password': "guest_password",
     }
 
     # establish a connection
