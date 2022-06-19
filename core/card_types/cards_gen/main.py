@@ -6,6 +6,7 @@ import sys
 import json
 
 
+# TODO: split into separate files
 def camel_to_snake(name):
     name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', name).lower()
@@ -60,7 +61,6 @@ namespace Core {{
         {new_class_camel}();
     }};
 }}
-
 """
 
 
@@ -84,7 +84,6 @@ namespace Core {{
 
     }}
 }}
-
 """
 
 
@@ -100,7 +99,6 @@ def generate_arguments_base(lst_of_args):
     return ", ".join(other_args)
 
 
-# TODO: add parser base and cur classes
 def generate_source(camel_base, camel_new, arguments_base, initialization_list_arguments):
     snake_new = camel_to_snake(camel_new)
     with open(os.path.join(dir_path, snake_new + '.cpp'), 'w') as file:
@@ -110,7 +108,23 @@ def generate_source(camel_base, camel_new, arguments_base, initialization_list_a
         file.write(write_str)
 
 
-# TODO: add cmake file
+format_template_cmake = """project(generated_cards)
+
+add_library(GeneratedCards
+        {source_files})
+"""
+
+
+def generate_cmake(source_files):
+    with open(os.path.join(dir_path, 'CMakeLists.txt'), 'w') as file:
+        write_str = format_template_cmake.format(source_files='\n'.join(list(map(lambda x: ' '.join(x), source_files))))
+        file.write(write_str)
+
+
+source_files = []
 for ls in LIST_OF_DATA:
     generate_header(ls[0], ls[1])
     generate_source(ls[0], ls[1], "", generate_arguments_base(ls[2:]))
+    file_name = camel_to_snake(ls[1])
+    source_files.append([file_name + '.cpp', file_name + '.h'])
+generate_cmake(source_files)

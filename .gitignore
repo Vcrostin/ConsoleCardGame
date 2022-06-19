@@ -78,5 +78,3 @@ fabric.properties
 
 #python codegen
 core/card_types/cards_gen/.idea
-#temporary ignoring
-core/card_types/generated_cards
