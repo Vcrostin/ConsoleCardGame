@@ -1,5 +1,6 @@
 project(cards)
 
+add_subdirectory(generated_cards)
 
 add_library(Cards
         buff_card.cpp buff_card.h
