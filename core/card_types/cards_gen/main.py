@@ -111,14 +111,14 @@ def generate_source(camel_base, camel_new, arguments_base, initialization_list_a
 format_template_cmake = """project(generated_cards)
 
 add_library(GeneratedCards
-        {source_files})
+{source_files})
 """
 
 
 # TODO add all_new_classes_include file
 def generate_cmake(source_files):
     with open(os.path.join(dir_path, 'CMakeLists.txt'), 'w') as file:
-        write_str = format_template_cmake.format(source_files='\n'.join(list(map(lambda x: ' '.join(x), source_files))))
+        write_str = format_template_cmake.format(source_files='\n'.join(list(map(lambda x: ' '*8 + ' '.join(x), source_files))))
         file.write(write_str)
 
 
