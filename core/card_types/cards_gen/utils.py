@@ -41,7 +41,7 @@ def get_mariadb_list():
 
 
 def dir_recreate(dir_name):
-    dir_path = os.path.join(os.path.dirname(os.getcwd()), dir_name)
+    dir_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), dir_name)
     print(dir_path)
     if os.path.exists(dir_path):
         shutil.rmtree(dir_path)

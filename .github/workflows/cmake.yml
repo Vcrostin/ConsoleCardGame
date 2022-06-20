@@ -18,34 +18,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Cache boost
-      uses: actions/cache@v1.0.3
-      id: cache-boost
-      with:
-        path: "~/boost"
-        key: libboost-all-dev
-    - name: Install boost
-      env:
-        CACHE_HIT: ${{steps.cache-boost.outputs.cache-hit}}
-      run: |
-        sudo apt-get update && sudo apt-get install -yq libboost-all-dev
-        mkdir -p ~/boost
-        for dep in libboost-all-dev; do
-            dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/boost/
-        done
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+      - name: Cache boost
+        uses: actions/cache@v1.0.3
+        id: cache-boost
+        with:
+          path: "~/boost"
+          key: libboost-all-dev
+      - name: Install boost
+        env:
+          CACHE_HIT: ${{steps.cache-boost.outputs.cache-hit}}
+        run: |
+          sudo apt-get update && sudo apt-get install -yq libboost-all-dev
+          mkdir -p ~/boost
+          for dep in libboost-all-dev; do
+              dpkg -L $dep | while IFS= read -r f; do if test -f $f; then echo $f; fi; done | xargs cp --parents --target-directory ~/boost/
+          done
+      - name: Execute CodeGen
+        run: |
+          sudo apt install libmariadb3 libmariadb-dev
+          sudo pip3 install mariadb
+          sudo python3 core/card_types/cards_gen/main.py
+          git status
+          git config --global user.name github-actions
+          git config --global user.email '${GITHUB_ACTOR}@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      - name: Update CodeGen
+        run: |
+          git status
+          git add core/card_types/generated_cards/*
+          git commit -am "updating CodeGen" ||  true
+          git push --force origin HEAD:$GITHUB_REF || true
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -C ${{env.BUILD_TYPE}}
       
