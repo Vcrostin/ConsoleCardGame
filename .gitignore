@@ -78,3 +78,4 @@ fabric.properties
 
 #python codegen
 core/card_types/cards_gen/.idea
+**/__pycache__
