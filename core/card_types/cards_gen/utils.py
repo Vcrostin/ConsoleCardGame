@@ -47,3 +47,8 @@ def dir_recreate(dir_name):
         shutil.rmtree(dir_path)
     os.mkdir(dir_path)
     return dir_path
+
+
+generate_title = """//
+// Created by codegen
+//"""

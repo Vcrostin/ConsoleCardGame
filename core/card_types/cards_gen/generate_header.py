@@ -1,9 +1,7 @@
-from utils import camel_to_snake
+from utils import camel_to_snake, generate_title
 import os
 
-format_template_header = """//
-// Created by codegen
-//
+format_template_header = generate_title + """
 #pragma once
 
 #include "../card_type.h"

@@ -1,9 +1,7 @@
-from utils import camel_to_snake
+from utils import camel_to_snake, generate_title
 import os
 
-format_template_source = """//
-// Created by codegen
-//
+format_template_source = generate_title + """
 
 #include "{new_class_snake}.h"
 
