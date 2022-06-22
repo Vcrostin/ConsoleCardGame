@@ -14,6 +14,27 @@ uint64_t generate_session_id() {
 
 Core::Board::Board() {
     cards.resize(12, nullptr);
-    cur_user = std::make_unique<User>(generate_session_id(), "name1", 0);
-    opponent_user = std::make_unique<User>(generate_session_id(), "name2", 0);
+    firstUser = nullptr;
+    secondUser = nullptr;
+}
+
+bool Core::Board::AddUser(const Core::User &user) {
+    if (firstUser == nullptr) {
+        firstUser = std::make_unique<User>(user);
+        return true;
+    }
+    if (secondUser == nullptr) {
+        secondUser = std::make_unique<User>(user);
+        return true;
+    }
+    return false;
+}
+
+bool Core::Board::IsBusy() const {
+    return !(firstUser == nullptr && secondUser == nullptr);
+}
+
+bool Core::Board::StartGameBoard() {
+    // TODO: add content
+    return false;
 }
