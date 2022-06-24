@@ -48,8 +48,10 @@ public:
                           "And enterprises of great pith and moment\n"
                           "With this regard their currents turn awry\n"
                           "And lose the name of action.";
-        clientSender->AddMessage(msg);
+        clientSender->AddMessage("data", msg);
         clientSender->SendAll();
+        // TODO : add requestTurn
+        // TODO : add syncTurn
     }
 
 private:

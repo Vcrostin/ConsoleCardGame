@@ -13,6 +13,8 @@
 #include <memory>
 #include "../core/utils/string_assist.h"
 #include "../core/configurations/all_configs.h"
+#include "../core/board.h"
+#include "../core/utils/json.hpp"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -33,6 +35,7 @@ private:
 
 public:
     typedef boost::shared_ptr<con_handler> pointer;
+    typedef std::deque<Core::Board> DequeBoards;
 
     // creating the pointer
     static pointer create(boost::asio::io_service &io_service) {
@@ -44,7 +47,8 @@ public:
         return sock;
     }
 
-    void start() {
+//TODO: add json file with options
+    void start(DequeBoards::iterator &it) {
         boost::system::error_code error;
         sock.wait(boost::asio::ip::tcp::socket::wait_read, error);
         sock.async_read_some(
@@ -85,7 +89,7 @@ private:
                 cerr << q;
                 res += q;
             }
-            cout << endl << res << endl;
+//            nlohmann::json json = res;
 
         } else {
             std::cerr << "error: " << err.message() << std::endl;
