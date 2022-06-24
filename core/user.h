@@ -8,6 +8,7 @@
 #include <string_view>
 #include <unordered_map>
 #include "card_types/generated_cards/all_generated_classes.h"
+#include "utils/json.hpp"
 
 namespace Core {
     class User {
@@ -20,7 +21,7 @@ namespace Core {
         };
     private:
         // std::string login;
-        // uint64_t sessionId;
+        uint64_t sessionId;
         std::string userName;
         std::array<std::shared_ptr<UnitCard>, 2> deskCards;
         std::array<std::shared_ptr<Card>, 5> handCards;
@@ -29,6 +30,13 @@ namespace Core {
     public:
 //        User(uint64_t sessionId, const std::string_view& userName, int32_t lvl,
 //             UserStatus userStatus = Core::User::UserStatus::USER);
+        [[nodiscard]] nlohmann::json ToJson() const {
+            nlohmann::json json;
+            json["userName"] = userName;
+            json["sessionId"] = sessionId;
+            return json;
+        }
+
         explicit User(const std::string_view &userName);
     };
 }

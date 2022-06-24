@@ -15,6 +15,7 @@
 #include "../core/utils/string_assist.h"
 #include "../core/configurations/all_configs.h"
 #include "../core/utils/json.hpp"
+#include "../core/user.h"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -34,13 +35,20 @@ class ClientSender : public boost::enable_shared_from_this<ClientSender> {
 public:
     typedef boost::shared_ptr<ClientSender> pointer;
 
+    enum struct REQUEST_TYPE {
+        DEFAULT = 0,
+        GET_STATUS = 1,
+        GET_UPDATE_DATA = 2,
+        SEND_DATA = 3,
+    };
+
     static pointer NewClient(boost::asio::io_service &ioService) {
         auto ptr = pointer(new ClientSender(ioService));
         ptr->Connect();
         return ptr;
     }
 
-    void AddMessage(std::string_view key, std::string_view sendingData, uint32_t charsPerIter = max_length) {
+    void AddMessage(std::string_view key, std::string_view sendingData) {
         if (sendingData.empty()) {
             //TODO: make custom exception classes
             throw std::invalid_argument("u tried to send an empty string");
@@ -48,9 +56,17 @@ public:
         json[std::string(key)] = sendingData;
     }
 
-    void SendAll(uint32_t charsPerIter = max_length) {
+    void SetUser(const Core::User &user) {
+        json["user"] = user.ToJson();
+    }
+
+    void SetRequestType(const REQUEST_TYPE &requestType) {
+        json["requestType"] = static_cast<int>(requestType);
+    }
+
+    void SendAll() {
         string jDump = json.dump();
-        auto splitStr = string_split(jDump, charsPerIter);
+        auto splitStr = string_split(jDump, max_length);
         md5 hash;
         md5::digest_type digest;
         hash.process_bytes(jDump.data(), jDump.size());
@@ -77,15 +93,16 @@ private:
     explicit ClientSender(boost::asio::io_service &ioService) : _ioService(ioService), _socket(_ioService) {
     }
 
-    const inline static std::string IP_ADDRESS = "127.0.0.1";
+    const std::string IP_ADDRESS = GLOBAL_GENERAL_CONF_PARSER.GetString("ipAddress");
 
     void Connect() {
-        _socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(IP_ADDRESS), 1234));
+        _socket.connect(tcp::endpoint(boost::asio::ip::address::from_string(IP_ADDRESS), portNumber));
     }
 
-    enum {
-        max_length = 1000
-    };
+    const uint32_t max_length = GLOBAL_GENERAL_CONF_PARSER.GetInt("maxPackageSize");
+
+    const uint32_t portNumber = GLOBAL_GENERAL_CONF_PARSER.GetInt("portNumber");
+
     io_service &_ioService;
     tcp::socket _socket;
     nlohmann::json json;

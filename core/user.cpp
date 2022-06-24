@@ -11,6 +11,6 @@
 //}
 
 
-Core::User::User(const std::string_view &userName) : userName(userName) {
+Core::User::User(const std::string_view &userName) : sessionId(0), userName(userName) {
 
 }

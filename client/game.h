@@ -9,7 +9,7 @@
 
 class Game {
 public:
-    explicit Game(boost::asio::io_service &ioService) : ioService(ioService) {
+    explicit Game(boost::asio::io_service &ioService) : ioService(ioService), user("Brostin") {
 
     }
 
@@ -49,12 +49,13 @@ public:
                           "With this regard their currents turn awry\n"
                           "And lose the name of action.";
         clientSender->AddMessage("data", msg);
+        clientSender->SetUser(user);
+        clientSender->SetRequestType(ClientSender::REQUEST_TYPE::DEFAULT);
         clientSender->SendAll();
-        // TODO : add requestTurn
-        // TODO : add syncTurn
     }
 
 private:
     boost::asio::io_service &ioService;
+    Core::User user;
 };
 
