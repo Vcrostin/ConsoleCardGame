@@ -27,7 +27,7 @@ private:
     tcp::socket sock;
     boost::asio::io_service::strand m_strand;
     std::string message = "Hello From Server!";
-    const int32_t max_length = GLOBAL_GENERAL_CONF_PARSER.GetInt("maxPackageSize");
+    const uint32_t max_length = GLOBAL_GENERAL_CONF_PARSER.GetInt("maxPackageSize");
     std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
 
     explicit con_handler(boost::asio::io_service &io_service) : sock(io_service), m_strand(io_service) {}
@@ -86,11 +86,12 @@ private:
             cerr << "New query:" << endl;
             std::string res;
             for (const auto &q: queryData) {
-                cerr << q;
                 res += q;
             }
-//            nlohmann::json json = res;
-
+            nlohmann::json json = nlohmann::json::parse(res);
+            cerr << endl << json["data"] << endl;
+            cerr << endl << json["user"] << endl;
+            cerr << endl << json["requestType"] << endl;
         } else {
             std::cerr << "error: " << err.message() << std::endl;
             sock.close();
