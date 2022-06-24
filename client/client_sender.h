@@ -14,6 +14,7 @@
 #include <boost/algorithm/hex.hpp>
 #include "../core/utils/string_assist.h"
 #include "../core/configurations/all_configs.h"
+#include "../core/utils/json.hpp"
 
 using namespace boost::asio;
 using ip::tcp;
@@ -39,39 +40,34 @@ public:
         return ptr;
     }
 
-    void AddMessage(std::string_view sendingData, uint32_t charsPerIter = max_length) {
-        auto splitStr = string_split(sendingData, charsPerIter);
-        if (splitStr.empty()) {
+    void AddMessage(std::string_view key, std::string_view sendingData, uint32_t charsPerIter = max_length) {
+        if (sendingData.empty()) {
             //TODO: make custom exception classes
             throw std::invalid_argument("u tried to send an empty string");
         }
-        md5 hash;
-        md5::digest_type digest;
-        hash.process_bytes(sendingData.data(), sendingData.size());
-        hash.get_digest(digest);
-        q.push((std::to_string(splitStr.size()) + " " +
-                std::to_string(sendingData.size() - charsPerIter * (splitStr.size() - 1)) + " " + toString(digest)));
-        for (auto str: splitStr) {
-            q.push(std::string(str));
-        }
+        json[std::string(key)] = sendingData;
     }
 
-    void SendAll() {
+    void SendAll(uint32_t charsPerIter = max_length) {
+        string jDump = json.dump();
+        auto splitStr = string_split(jDump, charsPerIter);
+        md5 hash;
+        md5::digest_type digest;
+        hash.process_bytes(jDump.data(), jDump.size());
+        hash.get_digest(digest);
+        string header = (std::to_string(splitStr.size()) + " " +
+                         std::to_string(splitStr.back().size()) + " " + toString(digest));
         std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
-        cerr << "Starting sending data " << q.size() << " total ..." << endl;
-        boost::asio::streambuf receive_buffer;
+        cerr << "Starting sending data " << splitStr.size() << " total ..." << endl;
         _socket.wait(boost::asio::socket_base::wait_write);
-        _socket.write_some(boost::asio::buffer(q.front(), max_length));
-        q.pop();
+        _socket.write_some(boost::asio::buffer(header, max_length));
         _socket.wait(boost::asio::socket_base::wait_read);
         _socket.read_some(boost::asio::buffer(data.get(), max_length));
-        size_t num_of_pack = q.size();
-        for (size_t i = 0; i < num_of_pack; i++) {
+        for (auto spl: splitStr) {
             _socket.wait(boost::asio::socket_base::wait_write);
-            _socket.write_some(boost::asio::buffer(q.front(), max_length));
+            _socket.write_some(boost::asio::buffer(spl.data(), max_length));
             _socket.wait(boost::asio::socket_base::wait_read);
             _socket.read_some(boost::asio::buffer(data.get(), max_length));
-            q.pop();
 
         }
         cerr << "Data sent" << endl;
@@ -92,7 +88,7 @@ private:
     };
     io_service &_ioService;
     tcp::socket _socket;
-    std::queue<std::string> q;
+    nlohmann::json json;
 };
 
 
