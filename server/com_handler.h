@@ -83,18 +83,42 @@ private:
                     queryData.emplace_back(data.get(), data.get() + num_of_elem);
                 }
             }
-            cerr << "New query:" << endl;
+//            cerr << "New query:" << endl;
             std::string res;
             for (const auto &q: queryData) {
                 res += q;
             }
             nlohmann::json json = nlohmann::json::parse(res);
-            cerr << endl << json["data"] << endl;
-            cerr << endl << json["user"] << endl;
-            cerr << endl << json["requestType"] << endl;
+//            cerr << endl << json["info"] << endl;
+//            cerr << endl << json["user"] << endl;
+//            cerr << endl << json["requestType"] << endl;
+            RequestHandler(json);
         } else {
             std::cerr << "error: " << err.message() << std::endl;
             sock.close();
+        }
+    }
+
+    void RequestHandler(const nlohmann::json &json) {
+        switch (json["requestType"].get<int32_t>()) {
+            case 1: {
+                cerr << "CHECK_STATUS" << endl;
+                break;
+            }
+            case 2: {
+                cerr << "GET_UPDATE_DATA" << endl;
+                break;
+            }
+            case 3: {
+                cerr << "SEND_DATA" << endl;
+                break;
+            }
+            case 4: {
+                cerr << "CONNECT" << endl;
+                break;
+            }
+            default:
+                throw std::invalid_argument("wrong case number");
         }
     }
 };
