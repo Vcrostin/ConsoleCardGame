@@ -37,9 +37,10 @@ public:
 
     enum struct REQUEST_TYPE {
         DEFAULT = 0,
-        GET_STATUS = 1,
+        CHECK_STATUS = 1,
         GET_UPDATE_DATA = 2,
         SEND_DATA = 3,
+        CONNECT = 4,
     };
 
     static pointer NewClient(boost::asio::io_service &ioService) {
