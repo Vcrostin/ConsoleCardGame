@@ -58,7 +58,7 @@ public:
     }
 
     void SetUser(const Core::User &user) {
-        json["user"] = user.ToJson();
+        user.ToJson(json["user"]);
     }
 
     void SetRequestType(const REQUEST_TYPE &requestType) {

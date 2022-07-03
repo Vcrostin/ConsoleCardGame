@@ -9,7 +9,7 @@
 
 class Game {
 public:
-    explicit Game(boost::asio::io_service &ioService) : ioService(ioService), user("Brostin") {
+    explicit Game(boost::asio::io_service &ioService) : ioService(ioService), user(string_view{"Brostin"}) {
 
     }
 
