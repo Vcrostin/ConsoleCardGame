@@ -14,3 +14,11 @@
 Core::User::User(const std::string_view &userName) : sessionId(0), userName(userName) {
 
 }
+
+void Core::User::SetSessionId(uint64_t sessionId) {
+    User::sessionId = sessionId;
+}
+
+uint64_t Core::User::GetSessionId() const {
+    return sessionId;
+}
