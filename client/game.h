@@ -17,7 +17,8 @@ public:
 
         auto clientSender = SetupSender(ClientSender::REQUEST_TYPE::CONNECT);
         clientSender->SendAll();
-
+        auto json = clientSender->GetAll();
+        user = Core::User(json["user"]);
         int32_t gameCode = 1;
         while (gameCode != 0) {
             PrintGameMenu();
@@ -28,7 +29,7 @@ public:
 
 private:
 
-    void PrintGameMenu() const {
+    static void PrintGameMenu() {
         std::cout << "GAME_MENU" << endl;
         // TODO : temporary menu
         std::cout << "Press 0 to exit" << endl;

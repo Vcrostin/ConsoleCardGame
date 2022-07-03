@@ -11,7 +11,7 @@ class CustomDeque {
 private:
     const size_t MAX_LENGTH = 1000;
     std::deque<T> dq;
-    std::size_t shift = -1;
+    std::size_t shift = 0;
 
 public:
     CustomDeque() = default;
@@ -67,7 +67,7 @@ public:
     }
 
     [[nodiscard]] constexpr size_t GetLastIdx() const {
-        return dq.size() - shift;
+        return dq.size() - shift - 1;
     }
 };
 
