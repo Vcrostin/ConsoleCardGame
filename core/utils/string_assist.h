@@ -3,10 +3,15 @@
 //
 
 #pragma once
+
 #include <string_view>
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <boost/uuid/detail/md5.hpp>
+#include <boost/algorithm/hex.hpp>
+
+using boost::uuids::detail::md5;
 
 
 std::vector<std::string_view> string_split(std::string_view str, char delim = ' ');
@@ -26,3 +31,11 @@ std::string multiply_string(std::string_view, size_t);
 std::string replace_chars(std::string_view str, char new_delim, char delim = ' ');
 
 std::vector<std::string_view> string_split(std::string_view, uint32_t);
+
+//TODO: move to different file
+inline std::string toString(const md5::digest_type &digest) {
+    const auto charDigest = reinterpret_cast<const char *>(&digest);
+    std::string result;
+    boost::algorithm::hex(charDigest, charDigest + sizeof(md5::digest_type), std::back_inserter(result));
+    return result;
+}

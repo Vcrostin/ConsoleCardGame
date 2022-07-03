@@ -8,6 +8,8 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/uuid/detail/md5.hpp>
+#include <boost/algorithm/hex.hpp>
 #include <deque>
 #include <iomanip>
 #include <memory>
@@ -24,6 +26,7 @@ using ip::tcp;
 using std::cout;
 using std::cerr;
 using std::endl;
+using boost::uuids::detail::md5;
 
 class con_handler : public boost::enable_shared_from_this<con_handler> {
 public:
@@ -123,16 +126,42 @@ private:
                 if (user.GetSessionId() == 0) {
                     ConnectUser(user);
                     user.ToJson(json["user"]);
+                    SendBack(json);
                     // TODO: sendBack()
                 } else {
                     return;
-                    // TODO: send error son;
+                    // TODO: send error json;
                 }
                 break;
             }
             default:
                 throw std::invalid_argument("wrong case number");
         }
+    }
+
+    void SendBack(const nlohmann::json &json) {
+        string jDump = json.dump();
+        auto splitStr = string_split(jDump, max_length);
+        md5 hash;
+        md5::digest_type digest;
+        hash.process_bytes(jDump.data(), jDump.size());
+        hash.get_digest(digest);
+        string header = (std::to_string(splitStr.size()) + " " +
+                         std::to_string(splitStr.back().size()) + " " + toString(digest));
+        std::unique_ptr<char[]> data_ptr = std::make_unique<char[]>(max_length);
+        cerr << "Starting sending data " << splitStr.size() << " total ..." << endl;
+        sock.wait(boost::asio::socket_base::wait_write);
+        sock.write_some(boost::asio::buffer(header, max_length));
+        sock.wait(boost::asio::socket_base::wait_read);
+        sock.read_some(boost::asio::buffer(data_ptr.get(), max_length));
+        for (auto spl: splitStr) {
+            sock.wait(boost::asio::socket_base::wait_write);
+            sock.write_some(boost::asio::buffer(spl.data(), max_length));
+            sock.wait(boost::asio::socket_base::wait_read);
+            sock.read_some(boost::asio::buffer(data_ptr.get(), max_length));
+
+        }
+        cerr << "Data sent" << endl;
     }
 
     void ConnectUser(Core::User &user) {

@@ -24,12 +24,6 @@ using std::cout;
 using std::endl;
 using boost::uuids::detail::md5;
 
-inline std::string toString(const md5::digest_type &digest) {
-    const auto charDigest = reinterpret_cast<const char *>(&digest);
-    std::string result;
-    boost::algorithm::hex(charDigest, charDigest + sizeof(md5::digest_type), std::back_inserter(result));
-    return result;
-}
 
 class ClientSender : public boost::enable_shared_from_this<ClientSender> {
 public:
@@ -88,6 +82,39 @@ public:
 
         }
         cerr << "Data sent" << endl;
+    }
+
+    nlohmann::json GetAll() {
+        std::string message = "server, hello!?";
+        std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
+        _socket.read_some(boost::asio::buffer(data.get(), max_length));
+        std::deque<std::string> queryData;
+        std::string std_dt = data.get();
+        auto split_std_dt = string_split(std_dt);
+        int32_t num = std::stoi(split_std_dt[0].data());
+        int32_t num_of_elem = std::stoi(split_std_dt[1].data());
+        // TODO: check hash-sum
+        cerr << num << " with num of element " << num_of_elem << " with hash " << split_std_dt[2] << endl;
+        _socket.wait(boost::asio::socket_base::wait_write);
+        _socket.write_some(boost::asio::buffer(message, max_length));
+        for (int i = 0; i < num; ++i) {
+            _socket.wait(boost::asio::socket_base::wait_read);
+            _socket.read_some(boost::asio::buffer(data.get(), max_length));
+            _socket.wait(boost::asio::socket_base::wait_write);
+            _socket.write_some(boost::asio::buffer(message, max_length));
+            if (i != num - 1) {
+                queryData.emplace_back(data.get(), data.get() + max_length);
+            } else {
+                queryData.emplace_back(data.get(), data.get() + num_of_elem);
+            }
+        }
+        std::string res;
+        for (const auto &q: queryData) {
+            res += q;
+        }
+        nlohmann::json json_ret = nlohmann::json::parse(res);
+        cerr << endl << json["user"] << endl;
+        return json_ret;
     }
 
 private:
