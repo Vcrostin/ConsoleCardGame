@@ -35,14 +35,14 @@ public:
 private:
     tcp::socket sock;
     boost::asio::io_service::strand m_strand;
-    DequeSessions AllBoards;
+    DequeSessions AllSessions;
     std::string message = "Hello From Server!";
     const uint32_t max_length = GLOBAL_GENERAL_CONF_PARSER.GetInt("maxPackageSize");
     std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
 
     explicit con_handler(boost::asio::io_service &io_service, DequeSessions it) : sock(io_service),
                                                                                   m_strand(io_service),
-                                                                                  AllBoards(std::move(it)) {}
+                                                                                  AllSessions(std::move(it)) {}
 
 
 public:
@@ -162,10 +162,10 @@ private:
     }
 
     void ConnectUser(Core::User &user) {
-        if (AllBoards->Empty() || AllBoards->Back().IsBusy()) {
-            AllBoards->AddBack();
+        if (AllSessions->Empty() || AllSessions->Back().IsBusy()) {
+            AllSessions->AddBack();
         }
-        user.SetSessionId(AllBoards->GetLastOneIndexationIdx());
-        AllBoards->Back().AddUser(user);
+        user.SetSessionId(AllSessions->GetLastOneIndexationIdx());
+        user.SetUserStatus(AllSessions->Back().AddUser(user));
     }
 };

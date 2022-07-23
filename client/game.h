@@ -43,6 +43,7 @@ private:
     int32_t ActionGameMenu() {
         int32_t switchNumber;
         std::cin >> switchNumber;
+        system("clear");
         switch (switchNumber) {
             case 0: {
                 break;

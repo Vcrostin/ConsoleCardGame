@@ -15,9 +15,9 @@ namespace Core {
     protected:
     public:
         enum class UserStatus {
-            USER = 0,
-            MODERATOR = 1,
-            ADMIN = 2
+            NOT_CONNECTED = 0,
+            CONNECTED_FIRST = 1,
+            CONNECTED_SECOND = 2,
         };
     private:
         // std::string login;
@@ -27,13 +27,14 @@ namespace Core {
         std::array<std::shared_ptr<UnitCard>, 2> deskCards;
         std::array<std::shared_ptr<Card>, 5> handCards;
         // int32_t level;
-        // UserStatus userStatus;
+        UserStatus userStatus;
     public:
 //        User(uint64_t sessionId, const std::string_view& userName, int32_t lvl,
 //             UserStatus userStatus = Core::User::UserStatus::USER);
         nlohmann::json &ToJson(nlohmann::json &json) const {
             json["userName"] = userName;
             json["sessionId"] = sessionId;
+            json["status"] = static_cast<int32_t>(userStatus);
             return json;
         }
 
@@ -42,9 +43,12 @@ namespace Core {
         explicit User(const nlohmann::json &json) {
             userName = json["userName"].get<std::string>();
             sessionId = json["sessionId"].get<uint64_t>();
+            userStatus = static_cast<UserStatus>(json["status"].get<int32_t>());
         }
 
         void SetSessionId(uint64_t sessionId);
+
+        void SetUserStatus(int32_t userStatus);
 
         [[nodiscard]] uint64_t GetSessionId() const;
     };

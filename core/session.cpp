@@ -4,16 +4,16 @@
 
 #include "session.h"
 
-bool Core::Session::AddUser(const Core::User &user) {
+int32_t Core::Session::AddUser(const Core::User &user) {
     if (firstUser == nullptr) {
         firstUser = std::make_unique<User>(user);
-        return true;
+        return 1;
     }
     if (secondUser == nullptr) {
         secondUser = std::make_unique<User>(user);
-        return true;
+        return 2;
     }
-    return false;
+    return 0;
 }
 
 bool Core::Session::IsBusy() const {

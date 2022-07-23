@@ -10,7 +10,7 @@
 namespace Core {
     class Session {
     public:
-        bool AddUser(const User &user);
+        int32_t AddUser(const User &user);
 
         bool IsBusy() const;
 

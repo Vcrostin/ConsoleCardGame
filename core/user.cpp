@@ -11,14 +11,22 @@
 //}
 
 
-Core::User::User(const std::string_view &userName) : sessionId(0), userName(userName) {
+Core::User::User(const std::string_view &userName) : sessionId(0), userName(userName),
+                                                     userStatus(UserStatus::NOT_CONNECTED) {
 
 }
 
-void Core::User::SetSessionId(uint64_t sessionId) {
-    User::sessionId = sessionId;
+void Core::User::SetSessionId(uint64_t idSession) {
+    sessionId = idSession;
 }
 
 uint64_t Core::User::GetSessionId() const {
     return sessionId;
+}
+
+void Core::User::SetUserStatus(int32_t statusCode) {
+    if (statusCode < 0 || statusCode > 2) {
+        // TODO: make custom exception class
+    }
+    userStatus = static_cast<UserStatus>(statusCode);
 }
