@@ -6,6 +6,7 @@
 
 #include <boost/asio.hpp>
 #include "client_sender.h"
+#include "../core/utils/colours_define.h"
 
 class Game {
 public:
@@ -30,8 +31,8 @@ public:
 private:
 
     static void PrintGameMenu() {
+        std::cout << RESET;
         std::cout << "GAME_MENU" << endl;
-        // TODO : temporary menu
         std::cout << "Press 0 to exit" << endl;
         std::cout << "Press 1 to check status" << endl;
         std::cout << "Press 2 to get new data" << endl;

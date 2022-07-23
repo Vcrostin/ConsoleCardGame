@@ -128,8 +128,7 @@ private:
                     user.ToJson(json["user"]);
                     SendBack(json);
                 } else {
-                    return;
-                    // TODO: send error json;
+                    SendBack(json);
                 }
                 break;
             }

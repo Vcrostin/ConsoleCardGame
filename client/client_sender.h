@@ -14,6 +14,7 @@
 #include <boost/algorithm/hex.hpp>
 #include "../core/utils/string_assist.h"
 #include "../core/configurations/all_configs.h"
+#include "../core/utils/colours_define.h"
 #include "../core/utils/json.hpp"
 #include "../core/user.h"
 
@@ -69,7 +70,7 @@ public:
         string header = (std::to_string(splitStr.size()) + " " +
                          std::to_string(splitStr.back().size()) + " " + toString(digest));
         std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
-        cerr << "Starting sending data " << splitStr.size() << " total ..." << endl;
+        cerr << RED << "Starting sending data " << splitStr.size() << " total ..." << RESET << endl;
         _socket.wait(boost::asio::socket_base::wait_write);
         _socket.write_some(boost::asio::buffer(header, max_length));
         _socket.wait(boost::asio::socket_base::wait_read);
