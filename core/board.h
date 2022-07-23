@@ -24,7 +24,6 @@ namespace Core {
     private:
         std::unique_ptr<User> firstUser;
         std::unique_ptr<User> secondUser;
-        // TODO: move desk to users field like hand and desk cards
         std::vector<std::shared_ptr<Card>> cards;
     };
 }

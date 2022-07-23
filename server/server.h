@@ -37,7 +37,6 @@ private:
 
     std::mutex dequeMutex;
     // TODO: make another class with field mutex and board
-    // TODO: make deque wrapper to remove unused element with same indexation
     con_handler::DequeBoards boards;
 public:
 //constructor for accepting connection from client

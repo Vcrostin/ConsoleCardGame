@@ -6,7 +6,7 @@
 #include <random>
 #include <chrono>
 
-uint64_t generate_session_id() {
+uint64_t generate_session_id [[deprecated]]() {
     auto now = std::chrono::high_resolution_clock::now();
     std::mt19937_64 random_generator_(now.time_since_epoch().count());
     return random_generator_();

@@ -56,7 +56,6 @@ public:
         return sock;
     }
 
-//TODO: add json file with options
     void start() {
         boost::system::error_code error;
         sock.wait(boost::asio::ip::tcp::socket::wait_read, error);
@@ -92,7 +91,6 @@ private:
                     queryData.emplace_back(data.get(), data.get() + num_of_elem);
                 }
             }
-//            cerr << "New query:" << endl;
             std::string res;
             for (const auto &q: queryData) {
                 res += q;

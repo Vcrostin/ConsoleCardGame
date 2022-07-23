@@ -32,7 +32,7 @@ std::string replace_chars(std::string_view str, char new_delim, char delim = ' '
 
 std::vector<std::string_view> string_split(std::string_view, uint32_t);
 
-//TODO: move to different file
+// TODO: move to different file
 inline std::string toString(const md5::digest_type &digest) {
     const auto charDigest = reinterpret_cast<const char *>(&digest);
     std::string result;
