@@ -127,7 +127,6 @@ private:
                     ConnectUser(user);
                     user.ToJson(json["user"]);
                     SendBack(json);
-                    // TODO: sendBack()
                 } else {
                     return;
                     // TODO: send error json;
@@ -168,7 +167,7 @@ private:
         if (AllBoards->Empty() || AllBoards->Back().IsBusy()) {
             AllBoards->AddBack();
         }
-        user.SetSessionId(AllBoards->GetLastIdx());
+        user.SetSessionId(AllBoards->GetLastOneIndexationIdx());
         AllBoards->Back().AddUser(user);
     }
 };

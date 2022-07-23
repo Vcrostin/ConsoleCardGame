@@ -62,12 +62,15 @@ public:
 
     constexpr T &AddBack() {
         dq.template emplace_back(T());
-        shift -= 1;
         return Back();
     }
 
     [[nodiscard]] constexpr size_t GetLastIdx() const {
         return dq.size() - shift - 1;
     }
+
+    [[nodiscard]] constexpr size_t GetLastOneIndexationIdx() const {
+        return GetLastIdx() + 1;
+    };
 };
 

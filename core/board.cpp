@@ -31,7 +31,7 @@ bool Core::Board::AddUser(const Core::User &user) {
 }
 
 bool Core::Board::IsBusy() const {
-    return !(firstUser == nullptr && secondUser == nullptr);
+    return !(firstUser == nullptr || secondUser == nullptr);
 }
 
 bool Core::Board::StartGameBoard() {
