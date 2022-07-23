@@ -6,6 +6,7 @@
 
 #include <boost/asio.hpp>
 #include "client_sender.h"
+#include "../core/board.h"
 #include "../core/utils/colours_define.h"
 
 class Game {
@@ -33,10 +34,10 @@ private:
     static void PrintGameMenu() {
         std::cout << RESET;
         std::cout << "GAME_MENU" << endl;
-        std::cout << "Press 0 to exit" << endl;
+        std::cout << "Press 0 to leave" << endl;
         std::cout << "Press 1 to check status" << endl;
-        std::cout << "Press 2 to get new data" << endl;
-        std::cout << "Press 3 to send new data" << endl;
+        std::cout << "Press 2 to resync" << endl;
+        std::cout << "Press 3 to start a move" << endl;
     }
 
     int32_t ActionGameMenu() {
@@ -48,6 +49,7 @@ private:
             }
             case 1: {
                 auto clientSender = SetupSender(ClientSender::REQUEST_TYPE::CHECK_STATUS);
+                // clientSender->AddMessage("status", )
                 clientSender->SendAll();
                 break;
             }

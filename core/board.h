@@ -15,15 +15,9 @@ namespace Core {
     public:
         Board();
 
-        bool AddUser(const User &user);
-
-        bool IsBusy() const;
-
         bool StartGameBoard();
 
     private:
-        std::unique_ptr<User> firstUser;
-        std::unique_ptr<User> secondUser;
         std::vector<std::shared_ptr<Card>> cards;
     };
 }

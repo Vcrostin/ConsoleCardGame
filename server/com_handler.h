@@ -16,7 +16,7 @@
 #include <utility>
 #include "../core/utils/string_assist.h"
 #include "../core/configurations/all_configs.h"
-#include "../core/board.h"
+#include "../core/session.h"
 #include "../core/utils/json.hpp"
 #include "../core/user.h"
 #include "../core/utils/custom_deque.h"
@@ -31,23 +31,24 @@ using boost::uuids::detail::md5;
 class con_handler : public boost::enable_shared_from_this<con_handler> {
 public:
     typedef boost::shared_ptr<con_handler> pointer;
-    typedef std::shared_ptr<CustomDeque<Core::Board>> DequeBoards;
+    typedef std::shared_ptr<CustomDeque<Core::Session>> DequeSessions;
 private:
     tcp::socket sock;
     boost::asio::io_service::strand m_strand;
-    DequeBoards AllBoards;
+    DequeSessions AllBoards;
     std::string message = "Hello From Server!";
     const uint32_t max_length = GLOBAL_GENERAL_CONF_PARSER.GetInt("maxPackageSize");
     std::unique_ptr<char[]> data = std::make_unique<char[]>(max_length);
 
-    explicit con_handler(boost::asio::io_service &io_service, DequeBoards it) : sock(io_service), m_strand(io_service),
-                                                                                AllBoards(std::move(it)) {}
+    explicit con_handler(boost::asio::io_service &io_service, DequeSessions it) : sock(io_service),
+                                                                                  m_strand(io_service),
+                                                                                  AllBoards(std::move(it)) {}
 
 
 public:
 
     // creating the pointer
-    static pointer create(boost::asio::io_service &io_service, DequeBoards it = nullptr) {
+    static pointer create(boost::asio::io_service &io_service, DequeSessions it = nullptr) {
         return pointer(new con_handler(io_service, std::move(it)));
     }
 
